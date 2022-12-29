@@ -1,0 +1,70 @@
+version: '3'
+
+networks:
+    default:
+        name: sensors
+
+services:
+    redis-server:
+        build:
+            context: redis
+        container_name: redis
+        privileged: true
+        ports:
+            - "0.0.0.0:6379:6379"
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - /usr/share/locale:/usr/share/locale:ro
+            - /data/opt/redis/var:/var/redis
+            - /data/opt/redis/run:/var/run/redis
+            - /data/opt/redis/log:/var/log/redis
+            - /data/opt/redis/lib:/var/lib/redis
+        environment:
+            TZ: "Asia/Tokyo"
+        user: "1000:1000"
+        restart: always
+        #networks:
+        #  - sensors
+
+    grafana:
+        build:
+            context: grafana
+        container_name: grafana
+        privileged: true
+        ports:
+            - "0.0.0.0:3000:3000"
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - /usr/share/locale:/usr/share/locale:ro
+            - /data/opt/grafana/logs:/var/log/grafana
+            - /data/opt/grafana/data:/var/lib/grafana
+        environment:
+            TZ: "Asia/Tokyo"
+        #user: "1000:1000"
+        user: "472:0"
+        restart: always
+        #networks:
+        #  - sensors
+
+    mysensor:
+        build:
+            context: mysensor
+        container_name: mysensor
+        privileged: true
+        #ports:
+        #   - "0.0.0.0:8088:80"
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - /usr/share/locale:/usr/share/locale:ro
+            - /data/opt/mysensor:/var/mysensor
+        devices:
+            - /dev/i2c-1:/dev/i2c-1
+            - /dev/i2c-2:/dev/i2c-2
+        environment:
+            TZ: "Asia/Tokyo"
+        #user: "1000:1000"
+        user: "1000:998"
+        restart: always
+        #networks:
+        #  - sensors
+
