@@ -7,6 +7,12 @@ https://github.com/MRSa/PiZeroDockerForSensors
 ### docker-compose.yml
 https://github.com/MRSa/PiZeroDockerForSensors/blob/main/monitor_sensor/docker-compose.yml
 
+### コンテナについて (備忘録)
+- (アーキテクチャをarmv6にしたかったので) Alpine Linuxをベースに作成
+   - Redis + RedisTimeSeries : Pi Zeroで構築(ビルド)する関係から Redisは 6.2.8、RedisTimeSeriesは 1.4系 を指定している
+   - Grafana : Grafanaのパッケージ取得の関係から、Dockerfile内にバージョン番号とアーキテクチャ(armv6)を指定している
+   - Python (センサデータ収集)
+
 ## システム構成
 ![System Image](https://github.com/MRSa/PiZeroDockerForSensors/blob/main/pics/pizero.jpg?raw=true)
 
@@ -45,8 +51,10 @@ pip3 install docker-compose
 /data/opt/grafana/logs
 /data/opt/grafana/data
 ```
-9. docker-compose build する
-10. docker-compose up -d してサービスを起動する (起動時間がかかりすぎてタイムアウトするようならば、タイムアウト時間を延長しておく)
+9. monitor_sensor/ で docker-compose build する
+10. docker-compose up -d してサービスを起動する
+
+ 起動時間がかかりすぎてタイムアウトするようならば、タイムアウト時間を延長しておく
 ```
 COMPOSE_HTTP_TIMEOUT=240 docker-compose up　-d
 ```
@@ -69,11 +77,11 @@ COMPOSE_HTTP_TIMEOUT=240 docker-compose up　-d
 
 ## Dashboard に Panel を追加する
 
-Queryの値は、RedisTimeSeries のタイプで設定する
+Queryの値は、RedisTimeSeries のタイプを設定する
 - Data source : Redis
 - Type : RedisTimeSeries
 - Command : TS.RANGE
-- Key : 以下を設定する
+- Key : 以下のKeyを使用してデータを格納しているので設定する
   - ts:bme680humidity : 湿度
   - ts:bme680pressure : 圧力
   - ts:bme680temperature : 温度
