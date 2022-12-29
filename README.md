@@ -49,6 +49,7 @@ COMPOSE_HTTP_TIMEOUT=240 docker-compose up　-d
 ```
 11. しばらく待つ
 12. Webブラウザからポート3000にアクセスすると、Grafanaが表示される
+
 初期ユーザ名 admin パスワード admin、ログイン時にパスワード変更を促されるのでパスワードを変更する
 
 ---------------------------------------
@@ -69,7 +70,7 @@ Queryの値は、RedisTimeSeries のタイプで設定する
 - Data source : Redis
 - Type : RedisTimeSeries
 - Command : TS.RANGE
-- Key : ts:bme680humidity または ts:bme680pressure または ts:bme680temperature または ts:bme680gasresistance
+- Key : 以下を設定する
   - ts:bme680humidity : 湿度
   - ts:bme680pressure : 圧力
   - ts:bme680temperature : 温度
