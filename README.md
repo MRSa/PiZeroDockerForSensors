@@ -1,5 +1,5 @@
 # PiZeroDockerForSensors : Raspberry Pi Zero で Docker & センサデータの収集
-Raspberry Pi Zero に Dockerを載せて、コンテナ３つ（Redis, Grafana, Python)を立ち上げ、I2Cで接続した(BME688の)センサーからのデータをRedisに蓄積し、Grafanaを使ってグラフ表示できます。
+Raspberry Pi Zero に Dockerを載せて、コンテナを３つ（Redis, Grafana, Python)立ち上げ、I2Cで接続した(BME688の)センサーからのデータをセンサーデータは、5分起きに収取してRedisに時系列データとして蓄積し、Grafanaを使ってグラフ表示できるようにします。
 
 ## リポジトリ
 https://github.com/MRSa/PiZeroDockerForSensors
@@ -7,10 +7,12 @@ https://github.com/MRSa/PiZeroDockerForSensors
 ## システム構成
 ![System Image](https://github.com/MRSa/PiZeroDockerForSensors/blob/main/pics/pizero.jpg?raw=true)
 
+## 収集結果表示イメージ(Grafana)
+![Grafana Image](https://github.com/MRSa/PiZeroDockerForSensors/blob/main/pics/grafana.jpg?raw=true)
 
 ---------------------------------------
 
-## Raspberry Pi Zeroの設定 (概略)
+## Raspberry Pi Zeroの設定 (概要)
 1. Raspberry Pi OS Lite (32bit) : 2022-09-22
 2. パッケージを最新にする(sudo apt update; sudo apt full-upgrade を実行する)
 3. スワップを設定 (/etc/dphys-swapfile を更新)
@@ -21,8 +23,7 @@ curl -fsSL https://get.docker.com -o get-docker.sh
 sudo sh get-docker.sh
 sudo usermod -aG docker (普段使いユーザ名)
 ```
-6. docker-composeのインストール
-普通にインストールしようとすると bcrypt と cryptography がエラーになるので回避策する
+6. docker-composeのインストール(普通にインストールすると bcrypt と cryptography がエラーになるので回避)
 ```
 sudo apt install python3-pip
 pip3 install --upgrade pip
@@ -30,7 +31,7 @@ pip3 install bcrypt==3.2.2
 pip3 install cryptography==3.4.8
 pip3 install docker-compose
 ```
-7. OSの再起動を行う
+7. このへんでOSの再起動を行う (sudo /sbin/shutdown -r now)
 8. データフォルダを作成し、書き込み可にしておく
 ```
 /data/opt/mysensor
@@ -42,19 +43,43 @@ pip3 install docker-compose
 /data/opt/grafana/data
 ```
 9. docker-compose build する
-10. docker-compose up -d してサービスを起動する
-
-起動時間がかかりすぎてタイムアウトするようならば、タイムアウト時間を延長する
+10. docker-compose up -d してサービスを起動する (起動時間がかかりすぎてタイムアウトするようならば、タイムアウト時間を延長しておく)
 ```
 COMPOSE_HTTP_TIMEOUT=240 docker-compose up　-d
 ```
+11. しばらく待つ
+12. Webブラウザからポート3000にアクセスする
 
 ---------------------------------------
 
+## Grafanaの設定
+
+### データソースの設定
+Data Sourceに「Redis」を追加する
+![Data Source](https://github.com/MRSa/PiZeroDockerForSensors/blob/main/pics/datasource0.jpg?raw=true)
+
+Redis の Address に「redis:6379」を設定する
+![Redis](https://github.com/MRSa/PiZeroDockerForSensors/blob/main/pics/datasource.jpg?raw=true)
+
+## Dashboard に Panel 追加
+
+Queryのは、RedisTimeSeries のタイプで設定する
+- Data source : Redis
+- Type : RedisTimeSeries
+- Command : TS.RANGE
+- Key : ts:bme680humidity または ts:bme680pressure または ts:bme680temperature または ts:bme680gasresistance
+-- ts:bme680humidity : 湿度
+-- ts:bme680pressure : 圧力
+-- ts:bme680temperature : 温度
+-- ts:bme680gasresistance : ガス抵抗値
+
+![Graph Settings](https://github.com/MRSa/PiZeroDockerForSensors/blob/main/pics/timeseries.jpg?raw=true)
 
 ---------------------------------------
-## 参考
+## 参考リンク
 - Grafana : https://grafana.com/grafana/
 - Redis : https://redis.io/
+- RedisTimeSeries : https://redis.io/docs/stack/timeseries/
 - pimoroni/BME68x : https://github.com/pimoroni/bme680-python
-
+- Docker Container(Alpine) : https://hub.docker.com/_/alpine
+- Alpine Linux Packages : https://pkgs.alpinelinux.org/packages
