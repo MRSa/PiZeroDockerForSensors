@@ -4,6 +4,9 @@ Raspberry Pi Zero に Dockerを載せて、コンテナを３つ（Redis, Grafan
 ## リポジトリ
 https://github.com/MRSa/PiZeroDockerForSensors
 
+### docker-compose.yml
+https://github.com/MRSa/PiZeroDockerForSensors/blob/main/monitor_sensor/docker-compose.yml
+
 ## システム構成
 ![System Image](https://github.com/MRSa/PiZeroDockerForSensors/blob/main/pics/pizero.jpg?raw=true)
 
@@ -76,7 +79,9 @@ Queryの値は、RedisTimeSeries のタイプで設定する
   - ts:bme680temperature : 温度
   - ts:bme680gasresistance : ガス抵抗値
 
-![Graph Settings](https://github.com/MRSa/PiZeroDockerForSensors/blob/main/pics/timeseries.jpg?raw=true)
+![Dashboard Settings](https://github.com/MRSa/PiZeroDockerForSensors/blob/main/pics/timeseries.jpg?raw=true)
+
+### グラフの軸などをカスタマイズする
 
 ---------------------------------------
 ## 参考リンク
