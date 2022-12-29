@@ -22,6 +22,7 @@ sudo sh get-docker.sh
 sudo usermod -aG docker (普段使いユーザ名)
 ```
 6. docker-composeのインストール
+普通にインストールしようとすると bcrypt と cryptography がエラーになるので回避策する
 ```
 sudo apt install python3-pip
 pip3 install --upgrade pip
@@ -30,8 +31,25 @@ pip3 install cryptography==3.4.8
 pip3 install docker-compose
 ```
 7. OSの再起動を行う
+8. データフォルダを作成し、書き込み可にしておく
+```
+/data/opt/mysensor
+/data/opt/redis/lib
+/data/opt/redis/var
+/data/opt/redis/log
+/data/opt/redis/run
+/data/opt/grafana/logs
+/data/opt/grafana/data
+```
+9. docker-compose build する
+10. docker-compose up -d してサービスを起動する
 
+起動時間がかかりすぎてタイムアウトするようならば、タイムアウト時間を延長する
+```
+COMPOSE_HTTP_TIMEOUT=240 docker-compose up　-d
+```
 
+---------------------------------------
 
 
 ---------------------------------------
