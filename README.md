@@ -1,5 +1,5 @@
 # PiZeroDockerForSensors : Raspberry Pi Zero で Docker & センサデータの収集
-Raspberry Pi Zero に Dockerを載せて、コンテナを３つ（Redis, Grafana, Python)立ち上げ、I2Cで接続した(BME688の)センサーからのデータをセンサーデータは、5分起きに収取してRedisに時系列データとして蓄積し、Grafanaを使ってグラフ表示できるようにします。
+Raspberry Pi Zero に Dockerを載せて、コンテナを３つ（Redis, Grafana, Python)立ち上げ、I2Cで接続した(BME688の)センサーからのデータをセンサーデータは、5分起きに収取してRedisに時系列データとして蓄積し、Grafanaを使ってグラフ表示できるようにする。
 
 ## リポジトリ
 https://github.com/MRSa/PiZeroDockerForSensors
@@ -17,13 +17,13 @@ https://github.com/MRSa/PiZeroDockerForSensors
 2. パッケージを最新にする(sudo apt update; sudo apt full-upgrade を実行する)
 3. スワップを設定 (/etc/dphys-swapfile を更新)
 4. raspi-config で I2Cを有効にしておく
-5. Dockerのインストール
+5. Dockerをインストール
 ```
 curl -fsSL https://get.docker.com -o get-docker.sh
 sudo sh get-docker.sh
 sudo usermod -aG docker (普段使いユーザ名)
 ```
-6. docker-composeのインストール(普通にインストールすると bcrypt と cryptography がエラーになるので回避)
+6. docker-composeのインストール(普通にインストールすると bcrypt と cryptography がエラーになるので回避する)
 ```
 sudo apt install python3-pip
 pip3 install --upgrade pip
@@ -48,30 +48,32 @@ pip3 install docker-compose
 COMPOSE_HTTP_TIMEOUT=240 docker-compose up　-d
 ```
 11. しばらく待つ
-12. Webブラウザからポート3000にアクセスする
+12. Webブラウザからポート3000にアクセスすると、Grafanaが表示される
+初期ユーザ名 admin パスワード admin、ログイン時にパスワード変更を促されるのでパスワードを変更する
 
 ---------------------------------------
 
 ## Grafanaの設定
+グラフ表示をするため、GrafanaからRedisに接続し、グラフ表示を行う。
 
 ### データソースの設定
-Data Sourceに「Redis」を追加する
+#### Data Sourceに「Redis」を追加する
 ![Data Source](https://github.com/MRSa/PiZeroDockerForSensors/blob/main/pics/datasource0.jpg?raw=true)
 
-Redis の Address に「redis:6379」を設定する
+#### Redis の Address に「redis:6379」を設定する
 ![Redis](https://github.com/MRSa/PiZeroDockerForSensors/blob/main/pics/datasource.jpg?raw=true)
 
-## Dashboard に Panel 追加
+## Dashboard に Panel を追加する
 
-Queryのは、RedisTimeSeries のタイプで設定する
+Queryの値は、RedisTimeSeries のタイプで設定する
 - Data source : Redis
 - Type : RedisTimeSeries
 - Command : TS.RANGE
 - Key : ts:bme680humidity または ts:bme680pressure または ts:bme680temperature または ts:bme680gasresistance
--- ts:bme680humidity : 湿度
--- ts:bme680pressure : 圧力
--- ts:bme680temperature : 温度
--- ts:bme680gasresistance : ガス抵抗値
+  - ts:bme680humidity : 湿度
+  - ts:bme680pressure : 圧力
+  - ts:bme680temperature : 温度
+  - ts:bme680gasresistance : ガス抵抗値
 
 ![Graph Settings](https://github.com/MRSa/PiZeroDockerForSensors/blob/main/pics/timeseries.jpg?raw=true)
 
