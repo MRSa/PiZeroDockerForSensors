@@ -1,5 +1,5 @@
 # PiZeroDockerForSensors : Raspberry Pi Zero で Docker & センサデータの収集
-Raspberry Pi Zero に Dockerを載せて、コンテナを３つ（Redis, Grafana, Python)立ち上げ、I2Cで接続した(BME688の)センサーからのデータをセンサーデータは、5分起きに収取してRedisに時系列データとして蓄積し、Grafanaを使ってグラフ表示できるようにする。
+Raspberry Pi Zero に Dockerを載せて、コンテナを３つ（Redis, Grafana, Python)立ち上げ、I2Cで接続した(BME688の)センサーからデータを5分ごとに収集してRedisに時系列データとして蓄積し、Grafanaを使ってグラフ表示できるようにする。
 
 ## リポジトリ
 https://github.com/MRSa/PiZeroDockerForSensors
