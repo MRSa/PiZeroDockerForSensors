@@ -59,6 +59,7 @@ class myBME680:
     def readData(self):
         try:
             mySensor.sensor.get_sensor_data()
+            self.current = datetime.datetime.now()
         except:
             print(" ")
 
