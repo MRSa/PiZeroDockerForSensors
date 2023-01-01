@@ -88,6 +88,7 @@ def showCurrentData():
             loopCount = loopCount - 1
             time.sleep(5)
             print(" ")
+
         except:
             print(" ")
 
@@ -96,18 +97,13 @@ redis_obj = redis.Redis(host=REDIS_HOST_ADDRESS, port=REDIS_HOST_PORT, db=REDIS_
 
 # -------------------
 if __name__ == '__main__':
-    bme280 = myBME280.myBME280()
-    sht31d = mySHT31d.mySHT31d()
-    ccs811 = myCCS811.myCCS811()
-    bme680 = myBME680.myBME680()
-    sgp30  = mySGP30.mySGP30()
-
     print('\n\nPolling:')
     try:
         pipe = redis_obj.pipeline()
         while True:
             try:
                 # ----- BME280
+                bme280 = myBME280.myBME280()
                 bme280.readData()
                 timestamp1 = int(bme280.getScanDateTime().timestamp() * 1000)
                 pipe.execute_command("ts.add", DATAID_BME280_TEMPERATURE, timestamp1, bme280.getTemperature())
@@ -115,24 +111,28 @@ if __name__ == '__main__':
                 pipe.execute_command("ts.add", DATAID_BME280_HUMIDITY, timestamp1, bme280.getHumidity())
 
                 # ----- SHT31D
+                sht31d = mySHT31d.mySHT31d()
                 sht31d.readData()
                 timestamp2 = int(sht31d.getScanDateTime().timestamp() * 1000)
                 pipe.execute_command("ts.add", DATAID_SHT31D_TEMPERATURE, timestamp2, sht31d.getTemperature())
                 pipe.execute_command("ts.add", DATAID_SHT31D_HUMIDITY, timestamp2, sht31d.getHumidity())
 
                 # ----- CCS811
+                ccs811 = myCCS811.myCCS811()
                 ccs811.readData()
                 timestamp3 = int(ccs811.getScanDateTime().timestamp() * 1000)
                 pipe.execute_command("ts.add", DATAID_CCS811_ECO2, timestamp3, ccs811.getECO2())
                 pipe.execute_command("ts.add", DATAID_CCS811_TVOC, timestamp3, ccs811.getTVOC())
 
                 # ----- SGP30
+                sgp30  = mySGP30.mySGP30()
                 sgp30.readData()
                 timestamp4 = int(sgp30.getScanDateTime().timestamp() * 1000)
                 pipe.execute_command("ts.add", DATAID_SGP30_ECO2, timestamp4, sgp30.geteCO2())
                 pipe.execute_command("ts.add", DATAID_SGP30_TVOC, timestamp4, sgp30.getTVOC())
 
                 # ----- BME680
+                bme680 = myBME680.myBME680()
                 bme680.readData()
                 timestamp5 = int(bme680.getScanDateTime().timestamp() * 1000)
                 pipe.execute_command("ts.add", DATAID_BME680_TEMPERATURE, timestamp5, bme680.getTemperature())
