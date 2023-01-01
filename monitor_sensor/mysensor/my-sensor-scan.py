@@ -149,6 +149,8 @@ if __name__ == '__main__':
 
             except:
                 print(" --- xxx ---")
+                time.sleep(5)
+                #time.sleep(SENSING_INTERVAL_SEC)
 
     except KeyboardInterrupt:
         pass

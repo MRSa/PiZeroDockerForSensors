@@ -12,17 +12,20 @@ class myBME680:
         except (RuntimeError, IOError):
             self.sensor = bme680.BME680(bme680.I2C_ADDR_SECONDARY)
 
-        self.sensor.set_humidity_oversample(bme680.OS_2X)
-        self.sensor.set_pressure_oversample(bme680.OS_4X)
-        self.sensor.set_temperature_oversample(bme680.OS_8X)
-        self.sensor.set_filter(bme680.FILTER_SIZE_3)
-        self.sensor.set_gas_status(bme680.ENABLE_GAS_MEAS)
+        try:
+            self.sensor.set_humidity_oversample(bme680.OS_2X)
+            self.sensor.set_pressure_oversample(bme680.OS_4X)
+            self.sensor.set_temperature_oversample(bme680.OS_8X)
+            self.sensor.set_filter(bme680.FILTER_SIZE_3)
+            self.sensor.set_gas_status(bme680.ENABLE_GAS_MEAS)
 
-        self.sensor.set_gas_heater_temperature(320)
-        self.sensor.set_gas_heater_duration(150)
-        self.sensor.select_gas_heater_profile(0)
-        self.current = datetime.datetime.now()
-        self.sensor.get_sensor_data()
+            self.sensor.set_gas_heater_temperature(320)
+            self.sensor.set_gas_heater_duration(150)
+            self.sensor.select_gas_heater_profile(0)
+            self.current = datetime.datetime.now()
+            self.sensor.get_sensor_data()
+        except:
+            print(" ")
 
     def getScanDateTime(self):
         return self.current
@@ -54,14 +57,17 @@ class myBME680:
             return 0.0
 
     def readData(self):
-        mySensor.sensor.get_sensor_data()
+        try:
+            mySensor.sensor.get_sensor_data()
+        except:
+            print(" ")
 
 # ---------------------------------------------
 if __name__ == '__main__':
     mySensor = myBME680()
     try:
         loopCount = 10
-        while loopCount > 0: 
+        while loopCount > 0:
             if mySensor.sensor.get_sensor_data():
                 print("date time      : %s" % mySensor.getScanDateTime().strftime('%Y–%m–%d %H:%M:%S'))
                 print("temperature    :  %-6.2f ℃" % mySensor.getTemperature())
